@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import Signup from '../models/userModel.js'; // Adjust path as necessary
-import jwt from 'jsonwebtoken';
 
 // Controller function to handle user signup
 export const signupform = async (req, res) => {
@@ -13,10 +12,7 @@ export const signupform = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Check if passwords match
-    if (password !== req.body.cpassword) {
-      return res.status(400).json({ message: 'Passwords do not match' });
-    }
+
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -32,12 +28,7 @@ export const signupform = async (req, res) => {
     // Save the user to the database
     await newUser.save();
 
-    // Generate a token (optional)
-    const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, {
-      expiresIn: '1h'
-    });
-
-    res.status(201).json({ message: 'User registered successfully', token });
+    res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
