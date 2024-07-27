@@ -1,0 +1,10 @@
+services:
+- type: web
+  name: react_task
+  runtime: node
+  repo: https://github.com/ALsaeed323/react_task
+  plan: free
+  region: oregon
+  buildCommand: npm install
+  startCommand: npm run start
+version: "1"

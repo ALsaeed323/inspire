@@ -1,0 +1,123 @@
+/* SignupForm.css */
+.signup-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .form-group input {
+    width: 48%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 20px;
+
+  }
+  
+  .password-group {
+    position: relative;
+    margin-bottom: 15px;
+  }
+  
+  .password-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .password-strength {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #ff6b6b;
+  }
+  
+  .signup-form input[type="email"] {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    border-radius: 5px;
+  }
+  .signup-form input[type="password"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .signup-form input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .signup-btn {
+    width: 95%;
+    padding: 10px;
+    background-color:#558946;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .signin-btn {
+    width: 108%;
+    padding: 10px;
+    background-color:#558946;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+  }
+  .checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .checkbox-group .form-checkbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+  }
+  .error-message {
+    color: red;
+    font-size: 12px; /* Adjust the font size as needed */
+    margin: 0; /* Remove margin to avoid the dot */
+    margin-bottom: 15px;
+  }
+  .checkbox-group .form-checkbox:checked {
+    background-color: green;
+    border-color: green;
+  }
+  
+  .checkbox-group .form-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  .sign-link{
+    font-weight: bold;
+  }
+  
+  
+  
