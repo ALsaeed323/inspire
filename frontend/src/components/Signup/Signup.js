@@ -5,31 +5,30 @@ import Illustration from '../Illustration/Illustration';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../Logo';
 import './Signup.css';
+import axios from 'axios';
 
 function Signup() {
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  function addUserHandler(userData) {
-    fetch('https://react-5053d-default-rtdb.firebaseio.com/users.json', {
-      method: 'POST',
-      body: JSON.stringify(userData),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(response => {
-      if (response.ok) {
-        setSuccessMessage('User Added Successfully');
-        console.log(response);
-        navigate('/', { replace: true }); // Navigate to home page after successful addition
-      } else {
-        throw new Error('Failed to add user');
-      }
-    }).catch(error => {
-      console.error(error);
-      // Handle error state or display an error message to the user
-    });
-  }
+  const addUserHandler = async (userData) => {
+    try {
+      console.log(userData);
+      const response = await axios.post('http://localhost:4000/signup', {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        password: userData.password,
+        });
+      setSuccessMessage(response.data.message);
+      setErrorMessage('');
+      navigate('/signin'); // Redirect to login page or another page on success
+    } catch (error) {
+      setSuccessMessage('');
+      setErrorMessage(error.response.data.message || 'An error occurred');
+    }
+  };
 
   return (
     <div className='signup-container'>
@@ -39,7 +38,8 @@ function Signup() {
         <p>Enter your credentials to continue</p>
         <SignupOption />
         <SignupForm onAddUser={addUserHandler} />
-        {successMessage && <p>{successMessage}</p>}
+        {successMessage && <p className="success-message">{successMessage}</p>}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
       <div className="signup-right">
         <Illustration />
