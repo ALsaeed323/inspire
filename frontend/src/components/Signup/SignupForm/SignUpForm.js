@@ -37,11 +37,13 @@ function SignupForm(props) {
       <div className="form-group">
         <input
           type="text"
+          className="handleinp"
           placeholder="First Name"
           {...register("firstName", { required: "First Name is required" })}
         />
         <input
           type="text"
+          className="handleinp"
           placeholder="Last Name"
           {...register("lastName", { required: "Last Name is required" })}
         />
