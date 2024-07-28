@@ -113,7 +113,7 @@ function SignupForm(props) {
       </button>
       <div className="or-divider"></div>
       <Link to="/signin" style={{ textDecoration: "none" }}>
-        <h4>Already have an account?</h4>
+      <p style={{ fontWeight: 'bold', color: 'black', textAlign: 'center' }}>Already have an account?</p>
       </Link>
     </form>
   );

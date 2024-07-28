@@ -81,7 +81,8 @@
   .checkbox-group {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-top: -20px;
+    margin-bottom: 30px;
   }
   .checkbox-group .form-checkbox {
     appearance: none;
@@ -129,7 +130,7 @@
 
   }
   .handleinp{
- 
+
     margin-right: 0px;
   }
 
