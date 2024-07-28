@@ -4,7 +4,12 @@ import { Link } from "react-router-dom";
 import "./SignupForm.css";
 
 function SignupForm(props) {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
   const [termsChecked, setTermsChecked] = useState(false);
 
   const onSubmit = (data) => {
@@ -13,19 +18,19 @@ function SignupForm(props) {
       return;
     }
     // Add the role as 'user' by default
-    const userData = { ...data, role: 'user' };
+    const userData = { ...data, role: "user" };
     props.onAddUser(userData);
   };
 
   const password = watch("password");
 
-  const passwordStrength = password ? (
-    password.length < 6
+  const passwordStrength = password
+    ? password.length < 6
       ? "Weak"
       : password.length >= 6 && password.length < 10
       ? "Moderate"
       : "Strong"
-  ) : "";
+    : "";
 
   return (
     <form className="signup-form" onSubmit={handleSubmit(onSubmit)}>
@@ -35,14 +40,21 @@ function SignupForm(props) {
           placeholder="First Name"
           {...register("firstName", { required: "First Name is required" })}
         />
-        {errors.firstName && <p className="error-message">{errors.firstName.message}</p>}
         <input
           type="text"
           placeholder="Last Name"
           {...register("lastName", { required: "Last Name is required" })}
         />
-        {errors.lastName && <p className="error-message">{errors.lastName.message}</p>}
       </div>
+      <div className="error-messages">
+        {errors.firstName && (
+          <span className="error-message">{errors.firstName.message}</span>
+        )}
+        {errors.lastName && (
+          <span className="error-message">{errors.lastName.message}</span>
+        )}
+      </div>
+
       <input
         type="email"
         placeholder="Email Address"
@@ -50,8 +62,8 @@ function SignupForm(props) {
           required: "Email Address is required",
           pattern: {
             value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-            message: "Enter a valid email address"
-          }
+            message: "Enter a valid email address",
+          },
         })}
       />
       {errors.email && <p className="error-message">{errors.email.message}</p>}

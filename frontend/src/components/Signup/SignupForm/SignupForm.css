@@ -118,6 +118,16 @@
   .sign-link{
     font-weight: bold;
   }
+  .error-messages {
+    display: flex;
+    gap: 10px; /* Optional: add some spacing between the error messages */
+  }
+  
+  .error-message {
+    color: red;
+    padding-left: 50px;
+
+  }
   
   
   

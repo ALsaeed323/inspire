@@ -78,7 +78,7 @@ export default function ProfilePage() {
           </MDBCol>
           <MDBCol lg="8">
             <MDBCard className="mb-4">
-              <MDBCardBody>
+              <MDBCardBody className="card-body" style={{ marginTop: '25px' }}>
                 <MDBRow>
                   <MDBCol sm="3">
                     <MDBCardText>Full Name</MDBCardText>
