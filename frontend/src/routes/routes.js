@@ -26,7 +26,7 @@ const AppRoutes = () => {
       <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/signup" element={<Signup />} />
-          <Route path="/signin" element={<Signin />} />         
+          <Route path="/signin" element={<Signin />} />
           <Route path="/" element={<Navigate to="/signup" />} />
           <Route path="dashboard" element={<ProtectedRoute element={<FullLayout />} roles={['admin']} />}>
             <Route path="about" element={<ProtectedRoute element={<About />} roles={['admin']} />} />
@@ -39,7 +39,7 @@ const AppRoutes = () => {
             <Route path="forms" element={<ProtectedRoute element={<Forms />} roles={['admin']} />} />
             <Route path="breadcrumbs" element={<ProtectedRoute element={<Breadcrumbs />} roles={['admin']} />} />
           </Route>
-          <Route path="/profile" element={<ProtectedRoute element={<UserProfile />} roles={['user']} />} />
+          <Route path="/profile" element={<ProtectedRoute element={<UserProfile />} roles={['user','admin']} />} />
         </Routes>
       </Suspense>
     </AuthProvider>

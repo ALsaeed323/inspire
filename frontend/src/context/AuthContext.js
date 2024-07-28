@@ -1,4 +1,3 @@
-// src/context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import userService from '../services/userService';
 
@@ -12,7 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Optionally, you can add code to check for an existing logged-in user
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -26,9 +24,15 @@ export const AuthProvider = ({ children }) => {
     return response; // return the response to access the redirectUrl
   };
 
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+
   const value = {
     user,
     login,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

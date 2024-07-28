@@ -1,21 +1,18 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ element, roles }) => {
   const { user } = useAuth();
 
-  // Redirect to login if not authenticated
   if (!user) {
     return <Navigate to="/signin" />;
   }
 
-  // Redirect based on role if role-based protection is provided
   if (roles && !roles.includes(user.role)) {
-    return <Navigate to="/signup" />;
+    return <Navigate to="/signin" />;
   }
 
-  // Render the component if authenticated and authorized
   return element;
 };
 
