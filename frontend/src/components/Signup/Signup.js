@@ -5,7 +5,7 @@ import Illustration from '../Illustration/Illustration';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../Logo';
 import './Signup.css';
-import axios from 'axios';
+import userService from '../../services/userService';
 
 function Signup() {
   const navigate = useNavigate();
@@ -14,19 +14,13 @@ function Signup() {
 
   const addUserHandler = async (userData) => {
     try {
-      console.log(userData);
-      const response = await axios.post('http://localhost:4000/signup', {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        password: userData.password,
-        });
-      setSuccessMessage(response.data.message);
+      const response = await userService.signup(userData);
+      setSuccessMessage(response.message);
       setErrorMessage('');
       navigate('/signin'); // Redirect to login page or another page on success
     } catch (error) {
       setSuccessMessage('');
-      setErrorMessage(error.response.data.message || 'An error occurred');
+      setErrorMessage(error.response?.data?.message || 'An error occurred');
     }
   };
 
