@@ -1,31 +1,35 @@
+// src/context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import userService from '../services/userService';
 
-// Create Context
 const AuthContext = createContext();
 
-// AuthProvider Component
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // User state, could be { role: 'admin' | 'user', ...otherData }
-
-  // Example login function
-  const login = (userData) => setUser(userData);
-
-
-  // Example logout function
-  const logout = () => setUser(null);
-
-  // Optionally, you could use useEffect to fetch user data from an API
-  useEffect(() => {
-    // Fetch user data from API or local storage
-    // setUser(fetchedUserData);
-  }, []);
-
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+export const useAuth = () => {
+  return useContext(AuthContext);
 };
 
-// Custom hook to use AuthContext
-export const useAuth = () => useContext(AuthContext);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Optionally, you can add code to check for an existing logged-in user
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const login = async (userData) => {
+    const response = await userService.login(userData);
+    setUser(response.user);
+    localStorage.setItem('user', JSON.stringify(response.user));
+    return response; // return the response to access the redirectUrl
+  };
+
+  const value = {
+    user,
+    login,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};

@@ -1,3 +1,4 @@
+// src/components/Login/SigninForm.js
 import React, { useState } from "react";
 
 function SigninForm({ onSignIn }) {
@@ -41,8 +42,7 @@ function SigninForm({ onSignIn }) {
         />
       </div>
       <div className="password-group">
-      <label style={{ padding: '10px', fontFamily: "'Arial', sans-serif" }}>Password:</label>
-
+        <label style={{ padding: '10px', fontFamily: "'Arial', sans-serif" }}>Password:</label>
         <input
           type="password"
           name="password"
@@ -52,7 +52,7 @@ function SigninForm({ onSignIn }) {
           onChange={handleInputChange}
         />
       </div>
-      <button  type="submit" className="signin-btn">
+      <button type="submit" className="signin-btn">
         Sign In
       </button>
     </form>
