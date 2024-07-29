@@ -21,7 +21,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
-  const { logout } = useAuth();
+  const { user,logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -95,7 +95,7 @@ export default function ProfilePage() {
                     <MDBCardText>Full Name</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">Johnatan Smith</MDBCardText>
+                    <MDBCardText className="text-muted">{user.firstName+" "+user.lastName}</MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -104,7 +104,7 @@ export default function ProfilePage() {
                     <MDBCardText>Email</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">example@example.com</MDBCardText>
+                    <MDBCardText className="text-muted">{user.email}</MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
