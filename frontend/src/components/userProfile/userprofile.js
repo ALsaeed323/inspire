@@ -17,8 +17,18 @@ import {
   MDBListGroupItem
 } from 'mdb-react-ui-kit';
 import Logo from '../Logo';
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/signin"); // Redirect to the sign-in page after logging out
+  };
+
   return (
     <section style={{ backgroundColor: '#eee' }}>
       <MDBContainer className="py-5">
@@ -45,6 +55,7 @@ export default function ProfilePage() {
                 <div className="d-flex justify-content-center mb-2">
                   <MDBBtn>Follow</MDBBtn>
                   <MDBBtn outline className="ms-1">Message</MDBBtn>
+                  <MDBBtn outline className="ms-1" onClick={handleLogout}>Logout</MDBBtn>
                 </div>
               </MDBCardBody>
             </MDBCard>
