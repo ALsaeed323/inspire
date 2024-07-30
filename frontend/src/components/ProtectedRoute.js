@@ -15,7 +15,7 @@ const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
   }
 
   if (roles && !roles.includes(user.role)) {
-    return <Navigate to="/" />;
+    return <Navigate to="/notaccessible" />;
   }
 
   return <Component {...rest} />;
