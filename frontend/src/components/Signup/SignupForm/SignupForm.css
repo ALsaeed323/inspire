@@ -8,6 +8,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
+    
   }
   
   .form-group input {
@@ -15,7 +16,8 @@
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-right: 20px;
+    margin-right: 0px;
+
 
   }
   
@@ -33,7 +35,9 @@
   
   .password-strength {
     position: absolute;
-    right: 10px;
+    right: 50px;
+    margin-top: 10px;
+
     top: 50%;
     transform: translateY(-50%);
     font-size: 12px;
@@ -81,7 +85,7 @@
   .checkbox-group {
     display: flex;
     align-items: center;
-    margin-top: -20px;
+    margin-top: -2px;
     margin-bottom: 30px;
   }
   .checkbox-group .form-checkbox {
@@ -129,10 +133,7 @@
     padding-left: 50px;
 
   }
-  .handleinp{
-
-    margin-right: 0px;
-  }
+ 
 
   
   
