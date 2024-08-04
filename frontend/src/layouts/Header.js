@@ -19,6 +19,7 @@ import user1 from "../assets/images/users/user4.jpg";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 
+
 const Header = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -26,6 +27,8 @@ const Header = () => {
 
   const { logout } = useAuth();
   const navigate = useNavigate();
+
+
 
   const toggle = () => setDropdownOpen((prevState) => !prevState);
   const Handletoggle = () => {
@@ -81,6 +84,7 @@ const Header = () => {
               About
             </Link>
           </NavItem>
+        
           <UncontrolledDropdown inNavbar nav>
             <DropdownToggle caret nav>
               DD Menu

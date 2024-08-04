@@ -1,0 +1,78 @@
+import Ticket from '../models/ticketModel.js';
+
+// Create a new ticket
+export const createTicket = async (req, res) => {
+  try {
+    const { type, service, severity, description } = req.body;
+    const attachment = req.file ? req.file.path : null; // Handle file upload
+
+    const newTicket = new Ticket({ type, service, severity, attachment, description });
+    await newTicket.save();
+
+    res.status(201).json(newTicket);
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating ticket', error });
+  }
+};
+
+// Get all tickets
+export const getAllTickets = async (req, res) => {
+  try {
+    const tickets = await Ticket.find();
+    res.status(200).json(tickets);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching tickets', error });
+  }
+};
+
+// Get a single ticket
+export const getHRTicket = async (req, res) => {
+  try {
+    const tickets = await Ticket.find({ type: 'HR Support' }); // Changed to { type: 'HR Support' }
+    if (tickets.length === 0) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+    res.status(200).json(tickets);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching ticket', error });
+  }
+};
+
+export const getAdministrativeTicket = async (req, res) => {
+  try {
+    const tickets = await Ticket.find({ type: 'Administrative Support' }); // Changed to { type: 'Administrative Support' }
+    if (tickets.length === 0) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+    res.status(200).json(tickets);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching ticket', error });
+  }
+};
+
+
+// Update a ticket
+export const updateTicket = async (req, res) => {
+  try {
+    const updatedTicket = await Ticket.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedTicket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+    res.status(200).json(updatedTicket);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating ticket', error });
+  }
+};
+
+// Delete a ticket
+export const deleteTicket = async (req, res) => {
+  try {
+    const deletedTicket = await Ticket.findByIdAndDelete(req.params.id);
+    if (!deletedTicket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+    res.status(200).json({ message: 'Ticket deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting ticket', error });
+  }
+};

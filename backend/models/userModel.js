@@ -7,7 +7,7 @@ const SignupSchema = new Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, match: [/\S+@\S+\.\S+/, "is invalid"] },
   password: { type: String, required: true, minlength: 8 },
-  role: { type: String, required: true, enum: ['user'], default: 'user' } // Default value set to 'user' // Role field restricted to 'user'
+  role: { type: String, required: true, default: 'user' } // Default value set to 'user' 
 }, {
   timestamps: true 
 });

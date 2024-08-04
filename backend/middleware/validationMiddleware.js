@@ -28,3 +28,16 @@ export const validateLogin = [
     next();
   }
 ];
+export const validateTicket = [
+  body('type').notEmpty().withMessage('Type is required'),
+  body('service').notEmpty().withMessage('Service is required'),
+  body('severity').notEmpty().withMessage('Severity is required'),
+  body('description').isLength({ max: 250 }).withMessage('Description must be under 250 characters'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  }
+];
