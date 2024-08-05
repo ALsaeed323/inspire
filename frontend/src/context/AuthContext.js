@@ -28,11 +28,11 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(response.user));
 
       // Navigate based on user role
-      if (response.user.role === 'admin') {
+      if (response.user.role === 'admin' || response.user.role === 'hr' || response.user.role === 'administrative') {
         navigate('/dashboard');
       } else if (response.user.role === 'user') {
         navigate('/profile');
-      }
+      }      
       return response;
     } catch (error) {
       // Handle login error

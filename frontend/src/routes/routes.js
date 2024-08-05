@@ -22,10 +22,6 @@ const NotAccessible = lazy(() => import('../components/notaccessible/notaccessib
 const Loading = () => <div>Loading...</div>;
 
 const AppRoutes = () => {
-  const [modal, setModal] = useState(false);
-
-  const toggle = () => setModal(prev => !prev);
-
   return (
     <AuthProvider>
       <Suspense fallback={<Loading />}>
@@ -36,19 +32,19 @@ const AppRoutes = () => {
           <Route path="/signin" element={<Signin />} />
           <Route path="/" element={<Navigate to="/signup" />} />
 
-          <Route path="dashboard" element={<ProtectedRoute element={FullLayout} roles={['admin']} />}>
-            <Route path="allTickets" element={<ProtectedRoute element={getAllTickets} roles={['admin']} />} />
-            <Route path="about" element={<ProtectedRoute element={About} roles={['admin']} />} />
-            <Route path="alerts" element={<ProtectedRoute element={Alerts} roles={['admin']} />} />
-            <Route path="badges" element={<ProtectedRoute element={Badges} roles={['admin']} />} />
-            <Route path="buttons" element={<ProtectedRoute element={Buttons} roles={['admin']} />} />
-            <Route path="cards" element={<ProtectedRoute element={Cards} roles={['admin']} />} />
-            <Route path="grid" element={<ProtectedRoute element={Grid} roles={['admin']} />} />
-            <Route path="table" element={<ProtectedRoute element={Tables} roles={['admin']} />} />
-            <Route path="breadcrumbs" element={<ProtectedRoute element={Breadcrumbs} roles={['admin']} />} />
-          </Route>
+      <Route path="dashboard" element={<ProtectedRoute element={FullLayout} roles={['admin', 'hr', 'administrative']} />}>
+      <Route path="allTickets" element={<ProtectedRoute element={getAllTickets} roles={['admin', 'hr', 'administrative']} />} />
+      <Route path="about" element={<ProtectedRoute element={About} roles={['admin', 'hr', 'administrative']} />} />
+      <Route path="alerts" element={<ProtectedRoute element={Alerts} roles={['admin', 'hr', 'administrative']} />} />
+      <Route path="badges" element={<ProtectedRoute element={Badges} roles={['admin', 'hr', 'administrative']} />} />
+      <Route path="buttons" element={<ProtectedRoute element={Buttons} roles={['admin', 'hr', 'administrative']} />} />
+      <Route path="cards" element={<ProtectedRoute element={Cards} roles={['admin', 'hr', 'administrative']} />} />
+      <Route path="grid" element={<ProtectedRoute element={Grid} roles={['admin', 'hr', 'administrative']} />} />
+      <Route path="table" element={<ProtectedRoute element={Tables} roles={['admin', 'hr', 'administrative']} />} />
+      <Route path="breadcrumbs" element={<ProtectedRoute element={Breadcrumbs} roles={['admin', 'hr', 'administrative']} />} />
+    </Route>
 
-          <Route path="/profile" element={<ProtectedRoute element={UserProfile} roles={['user', 'admin']} />} />
+          <Route path="/profile" element={<ProtectedRoute element={UserProfile} roles={['user', 'admin', 'hr', 'administrative']} />} />
           <Route path="/notaccessible" element={<NotAccessible />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

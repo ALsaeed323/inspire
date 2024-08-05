@@ -28,7 +28,7 @@ export const getAllTickets = async (req, res) => {
 // Get a single ticket
 export const getHRTicket = async (req, res) => {
   try {
-    const tickets = await Ticket.find({ type: 'HR Support' }); // Changed to { type: 'HR Support' }
+    const tickets = await Ticket.find({ type: 'HR Support' }); // i want to fetch  ticket that have type 'HR Support'
     if (tickets.length === 0) {
       return res.status(404).json({ message: 'Ticket not found' });
     }
@@ -40,7 +40,8 @@ export const getHRTicket = async (req, res) => {
 
 export const getAdministrativeTicket = async (req, res) => {
   try {
-    const tickets = await Ticket.find({ type: 'Administrative Support' }); // Changed to { type: 'Administrative Support' }
+    const tickets = await Ticket.find({ type: 'Administrative Support' }); //  i want to fetch  ticket that have type: 'Administrative Support' }
+    console.log(tickets);
     if (tickets.length === 0) {
       return res.status(404).json({ message: 'Ticket not found' });
     }

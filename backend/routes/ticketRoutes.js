@@ -14,7 +14,8 @@ router.post('/ticket', upload.single('attachment'), validateTicket, ticketContro
 router.get('/tickets', ticketController.getAllTickets);
 
 // Get a single ticket
-
+router.get('/tickets/hr', ticketController.getHRTicket);
+router.get('/tickets/administrative', ticketController.getAdministrativeTicket);
 
 // Update a ticket
 router.put('/ticket/:id', validateTicket, ticketController.updateTicket);

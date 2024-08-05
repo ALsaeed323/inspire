@@ -15,6 +15,15 @@ const getAllTickets = async () => {
   const response = await axios.get(`${API_URL}/tickets`);
   return response.data;
 };
+const getHRTickets = async () => {
+  const response = await axios.get(`${API_URL}/tickets/hr`);
+  return response.data;
+};
+
+const getAdministrativeTickets = async () => {
+  const response = await axios.get(`${API_URL}/tickets/administrative`);
+  return response.data;
+};
 
 // Get a single ticket by ID
 const getTicket = async (id) => {
@@ -38,6 +47,8 @@ export default {
   createTicket,
   getAllTickets,
   getTicket,
+  getHRTickets,
+  getAdministrativeTickets,
   updateTicket,
   deleteTicket,
 };
