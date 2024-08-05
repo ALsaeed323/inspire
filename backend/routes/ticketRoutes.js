@@ -18,7 +18,7 @@ router.get('/tickets/hr', ticketController.getHRTicket);
 router.get('/tickets/administrative', ticketController.getAdministrativeTicket);
 
 // Update a ticket
-router.put('/ticket/:id', validateTicket, ticketController.updateTicket);
+router.put('/ticketedit/:id',  upload.none(), ticketController.updateTicket);
 
 // Delete a ticket
 router.delete('/ticket/:id', ticketController.deleteTicket);

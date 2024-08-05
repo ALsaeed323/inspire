@@ -33,7 +33,8 @@ const getTicket = async (id) => {
 
 // Update a ticket by ID
 const updateTicket = async (id, ticketData) => {
-  const response = await axios.put(`${API_URL}/ticket/${id}`, ticketData);
+  console.log('Data being sent:', ticketData);
+  const response = await axios.put(`${API_URL}/ticketedit/${id}`, ticketData);
   return response.data;
 };
 

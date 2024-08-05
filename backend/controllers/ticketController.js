@@ -51,19 +51,34 @@ export const getAdministrativeTicket = async (req, res) => {
   }
 };
 
-
-// Update a ticket
 export const updateTicket = async (req, res) => {
   try {
-    const updatedTicket = await Ticket.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedTicket) {
+    // Fetch the existing ticket
+    const ticket = await Ticket.findById(req.params.id);
+    
+    if (!ticket) {
       return res.status(404).json({ message: 'Ticket not found' });
     }
+
+
+    // Update only the fields provided in req.body
+    Object.keys(req.body).forEach(key => {
+      if (req.body[key] !== undefined && req.body[key] !== null) {
+        ticket[key] = req.body[key];
+      }
+    });
+
+
+    // Save the updated ticket
+    const updatedTicket = await ticket.save();
+    
     res.status(200).json(updatedTicket);
   } catch (error) {
     res.status(500).json({ message: 'Error updating ticket', error });
   }
 };
+
+
 
 // Delete a ticket
 export const deleteTicket = async (req, res) => {
