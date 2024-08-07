@@ -1,16 +1,17 @@
+// src/components/TicketForm/Ticketedit.js
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import ticketService from '../../services/ticketService'; // Import the ticket service
+import ticketService from '../../services/ticketService';
 import './tikedit.css'; // Import the CSS file
 
-const TicketForm = () => {
-    const { id } = useParams(); // Get id from URL params
-    const [type, setType] = useState('');
+const TicketForm = ({ show, onClose, ticket }) => {
+    const [type, setType] = useState(ticket.type || '');
 
     useEffect(() => {
-        console.log('Ticket ID:', id); // Debugging
-    }, [id]);
+        if (ticket) {
+            setType(ticket.type);
+        }
+    }, [ticket]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,20 +19,21 @@ const TicketForm = () => {
         // Prepare the form data
         const formData = new FormData();
         formData.append('type', type);
-        console.log(formData)
 
         try {
             // Update the ticket
-            await ticketService.updateTicket(id, formData);
+            await ticketService.updateTicket(ticket._id, formData);
             // Optionally handle success, e.g., show a success message
             alert('Ticket updated successfully!');
-            // Close the modal or perform any other action
+            onClose(); // Close the modal after successful update
         } catch (error) {
             // Handle error, e.g., show an error message
             console.error('Error updating ticket:', error);
             alert('Failed to update ticket.');
         }
     };
+
+    if (!show) return null; // Render nothing if the modal is not shown
 
     return (
         <div className="form-container">
@@ -54,7 +56,7 @@ const TicketForm = () => {
                 <Button color="success" type="submit" className="mt-3">
                     Submit
                 </Button>
-                <Button color="secondary" style={{ marginLeft: '10px' }}  className="mt-3">
+                <Button color="secondary" style={{ marginLeft: '10px' }} onClick={onClose} className="mt-3">
                     Close
                 </Button>
             </Form>
