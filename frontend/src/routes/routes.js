@@ -1,9 +1,10 @@
-import React, { lazy, Suspense, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from '../context/AuthContext';
+// src/routes/AppRoutes.js
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
 import FullLayout from '../layouts/FullLayout';
 import ProtectedRoute from '../components/ProtectedRoute';
-
 
 const Signin = lazy(() => import('../components/Signin/Signin'));
 const About = lazy(() => import('../views/About'));
@@ -24,35 +25,55 @@ const NotAccessible = lazy(() => import('../components/notaccessible/notaccessib
 const Loading = () => <div>Loading...</div>;
 
 const AppRoutes = () => {
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    if (!authLoading) {
+      // Redirect logic
+      if (user) {
+        if (['admin', 'hr', 'administrative'].includes(user.role) && location.pathname !== '/dashboard') {
+          navigate('/dashboard');
+        } else if (user.role === 'user' && location.pathname !== '/profile') {
+          navigate('/profile');
+        }
+      } else if (location.pathname !== '/signin') {
+        navigate('/signin');
+      }
+      setInitialLoading(false);
+    }
+  }, [user]);
+
+  if (initialLoading || authLoading) {
+    return <Loading />;
+  }
+
   return (
-    <AuthProvider>
-      <Suspense fallback={<Loading />}>
-      
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/signin" element={<Signin />} />
 
-        <Routes>
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/" element={<Navigate to="/signup" />} />
+        <Route path="dashboard" element={<ProtectedRoute element={FullLayout} roles={['admin', 'hr', 'administrative']} />}>
+          <Route path="allTickets" element={<ProtectedRoute element={getAllTickets} roles={['admin', 'hr', 'administrative']} />} />
+          <Route path="about" element={<ProtectedRoute element={About} roles={['admin', 'hr', 'administrative']} />} />
+          <Route path="alerts" element={<ProtectedRoute element={Alerts} roles={['admin', 'hr', 'administrative']} />} />
+          <Route path="badges" element={<ProtectedRoute element={Badges} roles={['admin', 'hr', 'administrative']} />} />
+          <Route path="buttons" element={<ProtectedRoute element={Buttons} roles={['admin', 'hr', 'administrative']} />} />
+          <Route path="cards" element={<ProtectedRoute element={Cards} roles={['admin', 'hr', 'administrative']} />} />
+          <Route path="grid" element={<ProtectedRoute element={Grid} roles={['admin', 'hr', 'administrative']} />} />
+          <Route path="table" element={<ProtectedRoute element={Tables} roles={['admin', 'hr', 'administrative']} />} />
+          <Route path="breadcrumbs" element={<ProtectedRoute element={Breadcrumbs} roles={['admin', 'hr', 'administrative']} />} />
+          <Route path="ticketedit/:id" element={<ProtectedRoute element={Ticketedit} roles={['admin']} />} />
+        </Route>
 
-          <Route path="dashboard" element={<ProtectedRoute element={FullLayout} roles={['admin', 'hr', 'administrative']} />}>
-              <Route path="allTickets" element={<ProtectedRoute element={getAllTickets} roles={['admin', 'hr', 'administrative']} />} />
-              <Route path="about" element={<ProtectedRoute element={About} roles={['admin', 'hr', 'administrative']} />} />
-             <Route path="alerts" element={<ProtectedRoute element={Alerts} roles={['admin', 'hr', 'administrative']} />} />
-             <Route path="badges" element={<ProtectedRoute element={Badges} roles={['admin', 'hr', 'administrative']} />} />
-             <Route path="buttons" element={<ProtectedRoute element={Buttons} roles={['admin', 'hr', 'administrative']} />} />
-             <Route path="cards" element={<ProtectedRoute element={Cards} roles={['admin', 'hr', 'administrative']} />} />
-             <Route path="grid" element={<ProtectedRoute element={Grid} roles={['admin', 'hr', 'administrative']} />} />
-             <Route path="table" element={<ProtectedRoute element={Tables} roles={['admin', 'hr', 'administrative']} />} />
-             <Route path="breadcrumbs" element={<ProtectedRoute element={Breadcrumbs} roles={['admin', 'hr', 'administrative']} />} />
-             <Route path="ticketedit/:id" element={<ProtectedRoute element={Ticketedit} roles={['admin']} />} />
-           </Route>
-
-          <Route path="/profile" element={<ProtectedRoute element={UserProfile} roles={['user', 'admin', 'hr', 'administrative']} />} />
-          <Route path="/notaccessible" element={<NotAccessible />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </AuthProvider>
+        <Route path="/profile" element={<ProtectedRoute element={UserProfile} roles={['user', 'admin', 'hr', 'administrative']} />} />
+        <Route path="/notaccessible" element={<NotAccessible />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 };
 

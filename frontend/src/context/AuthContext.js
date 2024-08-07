@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Add this for navigation
+import { useNavigate } from 'react-router-dom';
 import userService from '../services/userService';
 
 const AuthContext = createContext();
@@ -11,14 +11,14 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // Use navigate for redirection
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-    setLoading(false); // Set loading to false after user is retrieved from localStorage
+    setLoading(false);
   }, []);
 
   const login = async (userData) => {
@@ -27,15 +27,13 @@ export const AuthProvider = ({ children }) => {
       setUser(response.user);
       localStorage.setItem('user', JSON.stringify(response.user));
 
-      // Navigate based on user role
-      if (response.user.role === 'admin' || response.user.role === 'hr' || response.user.role === 'administrative') {
-        navigate('/dashboard');
+      if (['admin', 'hr', 'administrative'].includes(response.user.role)) {
+        navigate('/');
       } else if (response.user.role === 'user') {
-        navigate('/profile');
-      }      
+        navigate('/');
+      }
       return response;
     } catch (error) {
-      // Handle login error
       console.error('Login failed:', error);
     }
   };
@@ -43,7 +41,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
-    navigate('/signin'); // Redirect to signin after logout
+    navigate('/signin');
   };
 
   const value = {
