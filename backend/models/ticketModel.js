@@ -1,5 +1,3 @@
-
-
 import mongoose from 'mongoose';
 
 const ticketSchema = new mongoose.Schema({
@@ -8,6 +6,8 @@ const ticketSchema = new mongoose.Schema({
   severity: { type: String, required: true },
   attachment: { type: String }, // Store file path or URL
   description: { type: String, maxlength: 250, required: true },
+  comment: { type: String, maxlength: 250,default: ' ' },
+  status: { type: String, default: 'pending' }, // Default status is 'pending'
   createdAt: { type: Date, default: Date.now }
 });
 

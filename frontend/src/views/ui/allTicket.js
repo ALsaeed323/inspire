@@ -1,46 +1,44 @@
-// src/components/TicketList/TicketList.js
 import React, { useEffect, useState } from 'react';
 import { Container, Table, Spinner, Alert, Button } from 'reactstrap';
-import { useNavigate } from 'react-router-dom';
 import ticketService from '../../services/ticketService';
 import { useAuth } from "../../context/AuthContext";
 import Ticketedit from '../../components/TicketForm/Ticketedit';
+import './ticketlist.css';
 
 const TicketList = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [modal, setModal] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false); // Renamed to modalOpen for clarity
   const { user } = useAuth();
-  const navigate = useNavigate();
 
-  const toggleModal = () => setModal(prev => !prev);
+  const toggleModal = () => setModalOpen(prev => !prev);
+
+  const fetchTickets = async () => {
+    try {
+      console.log('User role:', user.role);
+      let data;
+      if (user.role === 'admin') {
+        console.log('Fetching all tickets for admin');
+        data = await ticketService.getAllTickets();
+      } else if (user.role === 'hr') {
+        console.log('Fetching HR tickets');
+        data = await ticketService.getHRTickets();
+      } else if (user.role === 'administrative') {
+        console.log('Fetching administrative tickets');
+        data = await ticketService.getAdministrativeTickets();
+      }
+      setTickets(data);
+    } catch (err) {
+      console.error('Error fetching tickets:', err);
+      setError('Error fetching tickets');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        console.log('User role:', user.role);
-        let data;
-        if (user.role === 'admin') {
-          console.log('Fetching all tickets for admin');
-          data = await ticketService.getAllTickets();
-        } else if (user.role === 'hr') {
-          console.log('Fetching HR tickets');
-          data = await ticketService.getHRTickets();
-        } else if (user.role === 'administrative') {
-          console.log('Fetching administrative tickets');
-          data = await ticketService.getAdministrativeTickets();
-        }
-        setTickets(data);
-      } catch (err) {
-        console.error('Error fetching tickets:', err);
-        setError('Error fetching tickets');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (user) {
       fetchTickets();
     } else {
@@ -50,6 +48,11 @@ const TicketList = () => {
 
   const handleEdit = (ticket) => {
     setSelectedTicket(ticket);
+    toggleModal();
+  };
+
+  const handleModalClose = () => {
+    setSelectedTicket(null);
     toggleModal();
   };
 
@@ -67,6 +70,7 @@ const TicketList = () => {
             <th>Description</th>
             <th>Status</th>
             <th>Type</th>
+            <th>Comment</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -78,6 +82,7 @@ const TicketList = () => {
               <td>{ticket.description}</td>
               <td>{ticket.status}</td>
               <td>{ticket.type}</td>
+              <td>{ticket.comment}</td>
               <td>
                 <Button className="btn" color="success" onClick={() => handleEdit(ticket)}>Edit</Button>
               </td>
@@ -85,8 +90,18 @@ const TicketList = () => {
           ))}
         </tbody>
       </Table>
-      {selectedTicket && (
-        <Ticketedit show={modal} onClose={toggleModal} ticket={selectedTicket} />
+      {modalOpen && selectedTicket && (
+        <div className="ticket-edit-modal">
+          <Ticketedit 
+            show={modalOpen} 
+            onClose={handleModalClose} 
+            ticket={selectedTicket} 
+            onEditSuccess={() => {
+              fetchTickets(); // Re-fetch tickets after edit
+              handleModalClose();
+            }}
+          />
+        </div>
       )}
     </Container>
   );

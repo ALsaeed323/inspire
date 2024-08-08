@@ -26,31 +26,33 @@ const NotAccessible = lazy(() => import('../components/notaccessible/notaccessib
 const Loading = () => <div>Loading...</div>;
 
 const AppRoutes = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    if (!authLoading) {
-      // Redirect logic
-      if (user) {
-        if (['admin', 'hr', 'administrative'].includes(user.role) && location.pathname !== '/dashboard') {
-          navigate('/dashboard');
-        } else if (user.role === 'user' && location.pathname !== '/profile') {
-          navigate('/profile');
-        }
-      } else if (location.pathname !== '/signin') {
-        navigate('/signin');
+    console.log('Current URL:', location.pathname); // Log the current URL
+  
+    if (user) {
+      if (
+        ['admin', 'hr', 'administrative'].includes(user.role) &&
+        location.pathname === '/'
+      ) {
+        navigate('/dashboard');
+      } else if (user.role === 'user' && location.pathname === '/') {
+        navigate('/profile');
       }
-      setInitialLoading(false);
+    } else {
+      navigate('/signin');
     }
-  }, [user]);
+    setInitialLoading(false);
+  }, [user, location.pathname, navigate]);
 
-  if (initialLoading || authLoading) {
+
+  if (initialLoading) {
     return <Loading />;
   }
-
   return (
     <Suspense fallback={<Loading />}>
       <Routes>

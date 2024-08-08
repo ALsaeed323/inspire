@@ -1,4 +1,3 @@
-// src/components/TicketForm/Ticketedit.js
 import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import ticketService from '../../services/ticketService';
@@ -6,10 +5,14 @@ import './tikedit.css'; // Import the CSS file
 
 const TicketForm = ({ show, onClose, ticket }) => {
     const [type, setType] = useState(ticket.type || '');
+    const [status, setStatus] = useState(ticket.status || 'pending');
+    const [comment, setComment] = useState(ticket.comment || '');
 
     useEffect(() => {
         if (ticket) {
             setType(ticket.type);
+            setStatus(ticket.status);
+            setComment(ticket.comment);
         }
     }, [ticket]);
 
@@ -19,6 +22,8 @@ const TicketForm = ({ show, onClose, ticket }) => {
         // Prepare the form data
         const formData = new FormData();
         formData.append('type', type);
+        formData.append('status', status);
+        formData.append('comment', comment);
 
         try {
             // Update the ticket
@@ -53,6 +58,33 @@ const TicketForm = ({ show, onClose, ticket }) => {
                         <option value="Other Support">Other Support</option>
                     </Input>
                 </FormGroup>
+
+                <FormGroup>
+                    <Label for="formStatus">Status *</Label>
+                    <Input
+                        type="select"
+                        id="formStatus"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        required
+                    >
+                        <option value="pending">Pending</option>
+                        <option value="under handling">Under Handling</option>
+                        <option value="closed">Closed</option>
+                    </Input>
+                </FormGroup>
+
+                <FormGroup>
+                    <Label for="formComment">Comment</Label>
+                    <Input
+                        type="textarea"
+                        id="formComment"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        maxLength="250"
+                    />
+                </FormGroup>
+
                 <Button color="success" type="submit" className="mt-3">
                     Submit
                 </Button>
