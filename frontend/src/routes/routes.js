@@ -35,8 +35,8 @@ const AppRoutes = () => {
           <Route path="/" element={<Navigate to="/signup" />} />
 
           <Route path="dashboard" element={<ProtectedRoute element={FullLayout} roles={['admin', 'hr', 'administrative']} />}>
-              <Route path="allTickets" element={<ProtectedRoute element={getAllTickets} roles={['admin', 'hr', 'administrative']} />} />
-              <Route path="about" element={<ProtectedRoute element={About} roles={['admin', 'hr', 'administrative']} />} />
+            <Route path="allTickets" element={<ProtectedRoute element={getAllTickets} roles={['admin', 'hr', 'administrative']} />} />
+             <Route path="about" element={<ProtectedRoute element={About} roles={['admin', 'hr', 'administrative']} />} />
              <Route path="alerts" element={<ProtectedRoute element={Alerts} roles={['admin', 'hr', 'administrative']} />} />
              <Route path="badges" element={<ProtectedRoute element={Badges} roles={['admin', 'hr', 'administrative']} />} />
              <Route path="buttons" element={<ProtectedRoute element={Buttons} roles={['admin', 'hr', 'administrative']} />} />
