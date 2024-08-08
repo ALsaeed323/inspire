@@ -1,23 +1,26 @@
+// src/components/TicketList/TicketList.js
 import React, { useEffect, useState } from 'react';
 import { Container, Table, Spinner, Alert, Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import ticketService from '../../services/ticketService';
 import { useAuth } from "../../context/AuthContext";
+import Ticketedit from '../../components/TicketForm/Ticketedit';
 
 const TicketList = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [modal, setModal] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [modal, setModal] = useState(false);
 
-  const togglee = () => setModal(prev => !prev);
+  const toggleModal = () => setModal(prev => !prev);
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        console.log('User role:', user.role); // Log the user role
+        console.log('User role:', user.role);
         let data;
         if (user.role === 'admin') {
           console.log('Fetching all tickets for admin');
@@ -45,17 +48,13 @@ const TicketList = () => {
     }
   }, [user]);
 
+  const handleEdit = (ticket) => {
+    setSelectedTicket(ticket);
+    toggleModal();
+  };
+
   if (loading) return <Spinner animation="border" />;
   if (error) return <Alert color="danger">{error}</Alert>;
-
-  const handleEdit = (ticketId) => {
-    navigate(`/dashboard/ticketedit/${ticketId}`);
-    
-  };
-
-  const handleDelete = (ticketId) => {
-    navigate(`/delete/${ticketId}`);
-  };
 
   return (
     <Container>
@@ -80,13 +79,15 @@ const TicketList = () => {
               <td>{ticket.status}</td>
               <td>{ticket.type}</td>
               <td>
-                <Button className="btn" color="success" onClick={() => handleEdit(ticket._id)}> Edit </Button>
-                <Button className="btn" color="danger"  style={{ marginLeft: '10px' }} onClick={() => handleDelete(ticket._id)}> Delete </Button>
+                <Button className="btn" color="success" onClick={() => handleEdit(ticket)}>Edit</Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
+      {selectedTicket && (
+        <Ticketedit show={modal} onClose={toggleModal} ticket={selectedTicket} />
+      )}
     </Container>
   );
 };
