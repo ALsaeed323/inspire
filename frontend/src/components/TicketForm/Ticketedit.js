@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import ticketService from '../../services/ticketService';
 import './tikedit.css'; // Import the CSS file
 
@@ -7,6 +7,8 @@ const TicketForm = ({ show, onClose, ticket }) => {
     const [type, setType] = useState(ticket.type || '');
     const [status, setStatus] = useState(ticket.status || 'pending');
     const [comment, setComment] = useState(ticket.comment || '');
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         if (ticket) {
@@ -28,13 +30,16 @@ const TicketForm = ({ show, onClose, ticket }) => {
         try {
             // Update the ticket
             await ticketService.updateTicket(ticket._id, formData);
-            // Optionally handle success, e.g., show a success message
-            alert('Ticket updated successfully!');
-            onClose(); // Close the modal after successful update
+            setSuccessMessage('Ticket updated successfully!');
+            setErrorMessage('');
+            // Delay closing the modal to allow the success message to be visible
+            setTimeout(() => {
+                onClose();
+            }, 2000); // Adjust the timeout duration as needed
         } catch (error) {
-            // Handle error, e.g., show an error message
             console.error('Error updating ticket:', error);
-            alert('Failed to update ticket.');
+            setErrorMessage('Failed to update ticket.');
+            setSuccessMessage('');
         }
     };
 
@@ -43,6 +48,9 @@ const TicketForm = ({ show, onClose, ticket }) => {
     return (
         <div className="form-container">
             <Form onSubmit={handleSubmit} className="ticket-form">
+                {successMessage && <Alert color="success">{successMessage}</Alert>}
+                {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
+
                 <FormGroup>
                     <Label for="formType">Type *</Label>
                     <Input
