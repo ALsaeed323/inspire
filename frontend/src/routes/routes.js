@@ -50,6 +50,8 @@ const AppRoutes = () => {
   }, [user, location.pathname, navigate]);
 
 
+  console.log('ef');
+  
   if (initialLoading) {
     return <Loading />;
   }

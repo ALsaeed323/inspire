@@ -22,6 +22,7 @@ app.use(cors({
 
 // Connect to the database
 connectDB();
+console.log("jsut test");
 
 // Middleware setup
 app.use(express.json());
