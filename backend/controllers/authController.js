@@ -47,12 +47,22 @@ export const loginform = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
+    
+    // Check if the user is already logged in
+    if (user.userbit === 1) {
+      return res.status(400).json({ message: 'Already logged in' });
+    }
 
     // Compare the provided password with the hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
+
+    // Update the user login status
+    user.userbit = 1;
+    await user.save(); // Await the save operation
+    console.log(user.userbit);
 
     // Determine the redirect URL based on user role
     let redirectUrl = '/signup'; // default
@@ -63,9 +73,29 @@ export const loginform = async (req, res) => {
     }
 
     // Return user data and the redirect URL
-    res.status(200).json({ user: { id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role }, redirectUrl });
+    res.status(200).json({
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role
+      },
+      redirectUrl
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
 };
+export const logout = async (req, res) => {
+  const { email } = req.body;
+  const user = await Signup.findOne({ email });
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid email or password' });
+  }
+  user.userbit=0;
+  user.save()
+  console.log(user.userbit)
+  
+}
 

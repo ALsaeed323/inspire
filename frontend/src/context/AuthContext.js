@@ -43,12 +43,22 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    navigate('/signin');
+  const logout = async () => {
+    try {
+      console.log(user);
+      if (user) {
+        await userService.logout(user); // Pass user data to logout function
+      }
+      setUser(null);
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      navigate('/signin');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      throw error;
+    }
   };
+
 
   const value = {
     user,

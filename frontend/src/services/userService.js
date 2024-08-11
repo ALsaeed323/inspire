@@ -13,7 +13,19 @@ const login = async (userData) => {
   return response.data;
 };
 
+const logout = async (user) => {
+  try {
+    console.log(user);
+    const response = await axios.post(`${API_URL}/logout`, user );
+    return response.data;
+  } catch (error) {
+    console.error('Logout request failed:', error);
+    throw error;
+  }
+};
+
 export default {
   signup,
   login,
+  logout,
 };
