@@ -33,10 +33,6 @@ export const signupform = async (req, res) => {
   }
 };
 
-
-// Controller function to handle user login
-
-
 // Controller function to handle user login
 export const loginform = async (req, res) => {
   try {
@@ -97,5 +93,35 @@ export const logout = async (req, res) => {
   user.save()
   console.log(user.userbit)
   
-}
+};
+export const getHR = async (req, res) => {
+  try {
+    // Fetch HR users from the database
+    const HRusers = await Signup.find({ role: 'hr' });
+    
+    if (HRusers.length === 0) {
+      return res.status(404).json({ message: 'No HR users found' });
+    }
+    
+    // Send the HR users as the response
+    res.status(200).json(HRusers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching HR users', error });
+  }
+};
+export const getAdmiV = async (req, res) => {
+  try {
+    // Fetch HR users from the database
+    const AdminVusers = await Signup.find({ role: 'administrative' });
+    
+    if (AdminVusers.length === 0) {
+      return res.status(404).json({ message: 'No HR users found' });
+    }
+    
+    // Send the HR users as the response
+    res.status(200).json(AdminVusers);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching HR users', error });
+  }
+};
 

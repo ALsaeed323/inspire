@@ -7,6 +7,7 @@ const ticketSchema = new mongoose.Schema({
   attachment: { type: String }, // Store file path or URL
   description: { type: String, maxlength: 250, required: true },
   comment: { type: String, maxlength: 250,default: ' ' },
+  user: { type: String, required: true },
   status: { type: String, default: 'pending' }, // Default status is 'pending'
   createdAt: { type: Date, default: Date.now }
 });
