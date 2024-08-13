@@ -20,8 +20,7 @@ function Signin() {
       setSuccessMessage('Login successful');
       setErrorMessage('');
 
-      // // Navigate to the URL provided by the backend
-      // navigate(response.redirectUrl);
+
     } catch (error) {
       setSuccessMessage('');
       setErrorMessage(error.response?.data?.message || 'An error occurred');
