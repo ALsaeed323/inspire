@@ -8,7 +8,6 @@ const SignupSchema = new Schema({
   email: { type: String, required: true, match: [/\S+@\S+\.\S+/, "is invalid"] },
   password: { type: String, required: true, minlength: 8 },
   role: { type: String, required: true, default: 'user' }, // Default value set to 'user' 
-  userbit:{type: Number }
 }, {
   timestamps: true 
 });
