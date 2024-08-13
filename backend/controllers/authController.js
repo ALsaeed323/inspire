@@ -45,9 +45,9 @@ export const loginform = async (req, res) => {
     }
     
     // Check if the user is already logged in
-    if (user.userbit === 1) {
-      return res.status(400).json({ message: 'Already logged in' });
-    }
+    // if (user.userbit === 1) {
+    //   return res.status(400).json({ message: 'Already logged in' });
+    // }
 
     // Compare the provided password with the hashed password
     const isMatch = await bcrypt.compare(password, user.password);
@@ -83,17 +83,17 @@ export const loginform = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-export const logout = async (req, res) => {
-  const { email } = req.body;
-  const user = await Signup.findOne({ email });
-  if (!user) {
-    return res.status(400).json({ message: 'Invalid email or password' });
-  }
-  user.userbit=0;
-  user.save()
-  console.log(user.userbit)
+// export const logout = async (req, res) => {
+//   const { email } = req.body;
+//   const user = await Signup.findOne({ email });
+//   if (!user) {
+//     return res.status(400).json({ message: 'Invalid email or password' });
+//   }
+//   user.userbit=0;
+//   user.save()
+//   console.log(user.userbit)
   
-};
+// };
 export const getHR = async (req, res) => {
   try {
     // Fetch HR users from the database
@@ -109,6 +109,7 @@ export const getHR = async (req, res) => {
     res.status(500).json({ message: 'Error fetching HR users', error });
   }
 };
+
 export const getAdmiV = async (req, res) => {
   try {
     // Fetch HR users from the database

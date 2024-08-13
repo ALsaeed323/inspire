@@ -1,5 +1,3 @@
-
-// src/routes/AppRoutes.js
 import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -33,28 +31,28 @@ const AppRoutes = () => {
 
   useEffect(() => {
     console.log('Current URL:', location.pathname); // Log the current URL
+    console.log(user);
   
     if (user) {
-      if (
-        ['admin', 'hr', 'administrative'].includes(user.role) &&
-        location.pathname === '/'
-      ) {
+      if (['admin', 'hr', 'administrative'].includes(user.role) && location.pathname === '/') {
         navigate('/dashboard');
       } else if (user.role === 'user' && location.pathname === '/') {
         navigate('/profile');
+      } else if (['/signin', '/signup'].includes(location.pathname)) {
+        navigate('/'); // Redirect logged-in users away from signin/signup
       }
     } else {
-      navigate('/signin');
+      if (location.pathname !== '/signup') {
+        navigate('/signin');
+      }
     }
     setInitialLoading(false);
   }, [user, location.pathname, navigate]);
 
-
-  console.log('ef');
-  
   if (initialLoading) {
     return <Loading />;
   }
+
   return (
     <Suspense fallback={<Loading />}>
       <Routes>

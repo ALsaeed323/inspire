@@ -45,19 +45,24 @@ export const AuthProvider = ({ children }) => {
   };
   const logout = async () => {
     try {
-      console.log(user);
-      if (user) {
-        await userService.logout(user); // Pass user data to logout function
-      }
+      console.log('Current User:', user); // Log the current user before logging out
+  
+   
+      // Clear user state and local storage
       setUser(null);
       localStorage.removeItem('user');
-      localStorage.removeItem('token');
+  
+      // Confirm user state is null after logout
+      console.log('User after logout:', user);
+  
+      // Redirect to signin page
       navigate('/signin');
     } catch (error) {
       console.error('Logout failed:', error);
       throw error;
     }
   };
+  
 
 
   const value = {

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import ticketService from '../../services/ticketService';
 import userService from '../../services/userService';
+import { useAuth } from '../../context/AuthContext'; // Import useAuth to get user data
 import './tikedit.css'; // Import the CSS file
 
 const TicketForm = ({ show, onClose, ticket }) => {
+    const { user } = useAuth(); // Get the current user
     const [type, setType] = useState(ticket.type || '');
     const [status, setStatus] = useState(ticket.status || 'pending');
     const [comment, setComment] = useState(ticket.comment || '');
@@ -54,7 +56,7 @@ const TicketForm = ({ show, onClose, ticket }) => {
         const formData = {
             type,
             status,
-            comment,
+            comment: user.role !== 'admin' ? comment : '', // Exclude comment if user is admin
             user: selectedUser,
         };
 
@@ -114,16 +116,18 @@ const TicketForm = ({ show, onClose, ticket }) => {
                     </Input>
                 </FormGroup>
 
-                <FormGroup>
-                    <Label for="formComment">Comment</Label>
-                    <Input
-                        type="textarea"
-                        id="formComment"
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                        maxLength="250"
-                    />
-                </FormGroup>
+                {user.role !== 'admin' && (
+                    <FormGroup>
+                        <Label for="formComment">Comment</Label>
+                        <Input
+                            type="textarea"
+                            id="formComment"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            maxLength="250"
+                        />
+                    </FormGroup>
+                )}
 
                 <FormGroup>
                     <Label for="formUser">Assigned Users *</Label>
