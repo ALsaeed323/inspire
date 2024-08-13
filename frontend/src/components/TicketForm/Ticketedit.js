@@ -85,7 +85,7 @@ const TicketForm = ({ show, onClose, ticket }) => {
                 {successMessage && <Alert color="success">{successMessage}</Alert>}
                 {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
 
-                <FormGroup>
+                {user.role === 'admin' &&(<FormGroup>
                     <Label for="formType">Type *</Label>
                     <Input
                         type="select"
@@ -100,7 +100,8 @@ const TicketForm = ({ show, onClose, ticket }) => {
                         <option value="Other Support">Other Support</option>
                     </Input>
                 </FormGroup>
-
+)}
+                
                 <FormGroup>
                     <Label for="formStatus">Status *</Label>
                     <Input
@@ -129,7 +130,7 @@ const TicketForm = ({ show, onClose, ticket }) => {
                     </FormGroup>
                 )}
 
-                <FormGroup>
+                {user.role === 'admin' &&(    <FormGroup>
                     <Label for="formUser">Assigned Users *</Label>
                     <Input
                         type="select"
@@ -145,7 +146,8 @@ const TicketForm = ({ show, onClose, ticket }) => {
                             </option>
                         ))}
                     </Input>
-                </FormGroup>
+                </FormGroup>)}
+            
 
                 <Button color="success" type="submit" className="mt-3">
                     Submit
