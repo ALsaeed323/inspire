@@ -1,6 +1,11 @@
 // backend/controllers/authController.js
 import bcrypt from 'bcrypt';
 import Signup from '../models/userModel.js';
+import Session from '../models/sesstionModel.js'; 
+import generateSessionId from '../utils/gsesstion.js'; 
+
+
+const MAX_SESSIONS = 2;
 
 // Controller function to handle user signup
 export const signupform = async (req, res) => {
@@ -43,11 +48,6 @@ export const loginform = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
-    
-    // Check if the user is already logged in
-    if (user.userbit === 1) {
-      return res.status(400).json({ message: 'Already logged in' });
-    }
 
     // Compare the provided password with the hashed password
     const isMatch = await bcrypt.compare(password, user.password);
@@ -55,45 +55,63 @@ export const loginform = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    // Update the user login status
-    user.userbit = 1;
-    await user.save(); // Await the save operation
-    console.log(user.userbit);
+    // Check the number of active sessions for the user
+    const activeSessions = await Session.countDocuments({ userId: user._id });
 
-    // Determine the redirect URL based on user role
-    let redirectUrl = '/signup'; // default
-    if (user.role === 'user') {
-      redirectUrl = '/profile';
-    } else if (user.role === 'admin') {
-      redirectUrl = '/dashboard';
+    console.log("this is the active ->>>>>>>>"+activeSessions);
+    if (activeSessions.status==="active") {
+      return res.status(400).json({ message: 'Maximum session limit reached' });
     }
 
-    // Return user data and the redirect URL
+    // Generate a session ID
+    const sessionId = generateSessionId();
+
+    // Create a new session in the database
+    const session = new Session({
+      userId: user._id,
+      sessionId,
+      createdAt: new Date(),
+    });
+
+    await session.save();
+    console.log(sessionId);
+
+    // Return user data, session ID, and the redirect URL
     res.status(200).json({
       user: {
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        role: user.role
+        role: user.role,
+        sessionId:sessionId,
       },
-      redirectUrl
+       // Include the session ID in the response
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-// export const logout = async (req, res) => {
-//   const { email } = req.body;
-//   const user = await Signup.findOne({ email });
-//   if (!user) {
-//     return res.status(400).json({ message: 'Invalid email or password' });
-//   }
-//   user.userbit=0;
-//   user.save()
-//   console.log(user.userbit)
-  
-// };
+export const logout = async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+
+    if (!sessionId) {
+      return res.status(400).json({ message: 'Session ID is required' });
+    }
+
+    // Remove the session from the database
+    const result = await Session.deleteOne({ sessionId });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Session not found' });
+    }
+
+    res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
 export const getHR = async (req, res) => {
   try {
     // Fetch HR users from the database

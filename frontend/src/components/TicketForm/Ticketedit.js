@@ -62,6 +62,7 @@ const TicketForm = ({ show, onClose, ticket }) => {
 
         try {
             // Update the ticket
+            console.log(ticket._id);
             await ticketService.updateTicket(ticket._id, formData);
             setSuccessMessage('Ticket updated successfully!');
             setErrorMessage('');

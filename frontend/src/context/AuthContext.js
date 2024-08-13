@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import userService from '../services/userService';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import userService from "../services/userService";
 
 const AuthContext = createContext();
 
@@ -15,12 +15,12 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      const storedUser = localStorage.getItem('user');
+      const storedUser = localStorage.getItem("user");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
     } catch (error) {
-      console.error('Failed to retrieve user from localStorage:', error);
+      console.error("Failed to retrieve user from localStorage:", error);
     } finally {
       setLoading(false);
     }
@@ -30,40 +30,50 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await userService.login(userData);
       setUser(response.user);
-      localStorage.setItem('user', JSON.stringify(response.user));
+     
+      localStorage.setItem("sessionId", response.user.sessionId);
+      localStorage.setItem("user", JSON.stringify(response.user));
 
-      if (['admin', 'hr', 'administrative'].includes(response.user.role)) {
-        navigate('/');
-      } else if (response.user.role === 'user') {
-        navigate('/');
+      if (["admin", "hr", "administrative"].includes(response.user.role)) {
+        navigate("/");
+      } else if (response.user.role === "user") {
+        navigate("/");
       }
       return response;
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       throw error;
     }
   };
   const logout = async () => {
     try {
-      console.log('Current User:', user); // Log the current user before logging out
+      // Retrieve session ID from local storage or user state
+      const sessionId = localStorage.getItem("sessionId");
   
-   
+      if (!sessionId) {
+        console.error('No session ID found');
+        return;
+      }
+      await userService.logout(sessionId);
+  
+      // Pass session ID to userService.logout()
+      
       // Clear user state and local storage
       setUser(null);
-      localStorage.removeItem('user');
+      localStorage.removeItem("user");
+      localStorage.removeItem('sessionId'); // Also remove session ID from local storage
   
       // Confirm user state is null after logout
-      console.log('User after logout:', user);
+      console.log("User after logout:", user);
   
       // Redirect to signin page
-      navigate('/signin');
+      navigate("/signin");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
       throw error;
     }
   };
   
-
 
   const value = {
     user,
@@ -72,5 +82,9 @@ export const AuthProvider = ({ children }) => {
     logout,
   };
 
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 };

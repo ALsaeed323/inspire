@@ -21,16 +21,18 @@ const getAdministrative = async () => {
   const response = await axios.get(`${API_URL}/administrative`);
   return response.data;
 };
-const logout = async (user) => {
+const logout = async (sessionId) => {
   try {
-    console.log(user);
-    const response = await axios.post(`${API_URL}/logout`, user );
+    console.log('Sending sessionId:', sessionId); // Debugging
+    const response = await axios.post(`${API_URL}/logout`, { sessionId });
+    console.log('Logout response:', response.data); // Debugging
     return response.data;
   } catch (error) {
-    console.error('Logout request failed:', error);
+    console.error('Logout request failed:', error.response?.data || error.message);
     throw error;
   }
 };
+
 
 export default {
   signup,
