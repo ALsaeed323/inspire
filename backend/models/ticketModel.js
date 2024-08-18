@@ -6,11 +6,12 @@ const ticketSchema = new mongoose.Schema({
   severity: { type: String, required: true },
   attachment: { type: String }, // Store file path or URL
   description: { type: String, maxlength: 250, required: true },
-  comment: { type: String, maxlength: 250,default: ' ' },
-  user: { type: String, required: true },
+  comment: { type: String, maxlength: 250, default: ' ' },
+  users: [{ type: String, required: true }], // Change this to an array of strings
   status: { type: String, default: 'pending' }, // Default status is 'pending'
   createdAt: { type: Date, default: Date.now }
 });
+
 
 const Ticket = mongoose.model('Ticket', ticketSchema);
 

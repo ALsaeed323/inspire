@@ -53,16 +53,23 @@ const TicketForm = ({ show, onClose, ticket }) => {
         e.preventDefault();
 
         // Prepare the form data
-        const formData = {
+        let formData = {
             type,
             status,
             comment: user.role !== 'admin' ? comment : '', // Exclude comment if user is admin
-            user: selectedUser,
+            users: []
         };
+
+        if (selectedUser === 'all') {
+            // Assign to all users in the department
+            formData.users = users.map(u => u._id); // Collect all user IDs
+        } else if (selectedUser) {
+            // Assign to a specific user
+            formData.users = [selectedUser];
+        }
 
         try {
             // Update the ticket
-            console.log(ticket._id);
             await ticketService.updateTicket(ticket._id, formData);
             setSuccessMessage('Ticket updated successfully!');
             setErrorMessage('');
@@ -86,22 +93,23 @@ const TicketForm = ({ show, onClose, ticket }) => {
                 {successMessage && <Alert color="success">{successMessage}</Alert>}
                 {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
 
-                {user.role === 'admin' &&(<FormGroup>
-                    <Label for="formType">Type *</Label>
-                    <Input
-                        type="select"
-                        id="formType"
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                        required
-                    >
-                        <option value="">Select Type</option>
-                        <option value="HR Support">HR Support</option>
-                        <option value="Administrative Support">Administrative Support</option>
-                        <option value="Other Support">Other Support</option>
-                    </Input>
-                </FormGroup>
-)}
+                {user.role === 'admin' && (
+                    <FormGroup>
+                        <Label for="formType">Type *</Label>
+                        <Input
+                            type="select"
+                            id="formType"
+                            value={type}
+                            onChange={(e) => setType(e.target.value)}
+                            required
+                        >
+                            <option value="">Select Type</option>
+                            <option value="HR Support">HR Support</option>
+                            <option value="Administrative Support">Administrative Support</option>
+                            <option value="Other Support">Other Support</option>
+                        </Input>
+                    </FormGroup>
+                )}
                 
                 <FormGroup>
                     <Label for="formStatus">Status *</Label>
@@ -131,24 +139,26 @@ const TicketForm = ({ show, onClose, ticket }) => {
                     </FormGroup>
                 )}
 
-                {user.role === 'admin' &&(    <FormGroup>
-                    <Label for="formUser">Assigned Users *</Label>
-                    <Input
-                        type="select"
-                        id="formUser"
-                        value={selectedUser}
-                        onChange={(e) => setSelectedUser(e.target.value)}
-                        required
-                    >
-                        <option value="">Select User</option>
-                        {users.map((user, index) => (
-                            <option key={index} value={user._id}>
-                                {user.firstName} {user.lastName}
-                            </option>
-                        ))}
-                    </Input>
-                </FormGroup>)}
-            
+                {user.role === 'admin' && (
+                    <FormGroup>
+                        <Label for="formUser">Assigned Users *</Label>
+                        <Input
+                            type="select"
+                            id="formUser"
+                            value={selectedUser}
+                            onChange={(e) => setSelectedUser(e.target.value)}
+                            required
+                        >
+                            <option value="">Select User</option>
+                            <option value="all">Assign to All Users in Department</option>
+                            {users.map((user, index) => (
+                                <option key={index} value={user._id}>
+                                    {user.firstName} {user.lastName}
+                                </option>
+                            ))}
+                        </Input>
+                    </FormGroup>
+                )}
 
                 <Button color="success" type="submit" className="mt-3">
                     Submit

@@ -60,15 +60,17 @@ export const updateTicket = async (req, res) => {
       return res.status(404).json({ message: 'Ticket not found' });
     }
 
-
-    // Update only the fields provided in req.body
+    // Iterate over each key in req.body and update the ticket
     Object.keys(req.body).forEach(key => {
       if (req.body[key] !== undefined && req.body[key] !== null) {
-        ticket[key] = req.body[key];
+        if (key === 'users' && Array.isArray(req.body[key])) {
+          ticket.users = req.body[key];
+        } else {
+          ticket[key] = req.body[key];
+        }
       }
     });
-
-
+    
     // Save the updated ticket
     const updatedTicket = await ticket.save();
     
