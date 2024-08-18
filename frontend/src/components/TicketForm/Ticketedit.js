@@ -51,7 +51,7 @@ const TicketForm = ({ show, onClose, ticket }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         // Prepare the form data
         let formData = {
             type,
@@ -59,7 +59,7 @@ const TicketForm = ({ show, onClose, ticket }) => {
             comment: user.role !== 'admin' ? comment : '', // Exclude comment if user is admin
             users: []
         };
-
+    
         if (selectedUser === 'all') {
             // Assign to all users in the department
             formData.users = users.map(u => u._id); // Collect all user IDs
@@ -67,13 +67,19 @@ const TicketForm = ({ show, onClose, ticket }) => {
             // Assign to a specific user
             formData.users = [selectedUser];
         }
-
+    
+        // If no users are assigned and there is a comment, assign the ticket to the commenting user
+        if (formData.users.length === 0 && comment) {
+            formData.users = [user.id];
+            formData.comment = comment; // Include comment
+        }
+    
         try {
             // Update the ticket
             await ticketService.updateTicket(ticket._id, formData);
             setSuccessMessage('Ticket updated successfully!');
             setErrorMessage('');
-
+    
             // Delay closing the modal to allow the success message to be visible
             setTimeout(() => {
                 onClose();
@@ -84,6 +90,7 @@ const TicketForm = ({ show, onClose, ticket }) => {
             setSuccessMessage('');
         }
     };
+    
 
     if (!show) return null; // Render nothing if the modal is not shown
 
