@@ -46,35 +46,48 @@ export const loginform = async (req, res) => {
     // Find the user by email
     const user = await Signup.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     // Compare the provided password with the hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // Check the number of active sessions for the user
-    const activeSessions = await Session.countDocuments({ userId: user._id });
-
-    console.log("this is the active ->>>>>>>>"+activeSessions);
-    if (activeSessions.status==="active") {
-      return res.status(400).json({ message: 'Maximum session limit reached' });
-    }
-
-    // Generate a session ID
-    const sessionId = generateSessionId();
-
-    // Create a new session in the database
-    const session = new Session({
+    // Check if there's an active session for the user
+    const activeSession = await Session.findOne({
       userId: user._id,
-      sessionId,
-      createdAt: new Date(),
+      status: "active",
     });
 
-    await session.save();
-    console.log(sessionId);
+    if (activeSession) {
+      return res.status(400).json({ message: "An active session already exists" });
+    }
+
+    // Check if there's an inactive session and reactivate it
+    let session = await Session.findOne({
+      userId: user._id,
+      status: "inactive",
+    });
+
+    if (session) {
+      session.status = "active";
+      session.lastAccess = new Date();
+      await session.save();
+    } else {
+      // Generate a session ID
+      const sessionId = generateSessionId();
+
+      // Create a new session in the database
+      session = new Session({
+        userId: user._id,
+        sessionId,
+        createdAt: new Date(),
+      });
+
+      await session.save();
+    }
 
     // Return user data, session ID, and the redirect URL
     res.status(200).json({
@@ -84,32 +97,36 @@ export const loginform = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        sessionId:sessionId,
+        sessionId: session.sessionId,
       },
-       // Include the session ID in the response
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    res.status(500).json({ message: "Server error", error });
   }
 };
+
 export const logout = async (req, res) => {
   try {
     const { sessionId } = req.body;
 
     if (!sessionId) {
-      return res.status(400).json({ message: 'Session ID is required' });
+      return res.status(400).json({ message: "Session ID is required" });
     }
 
-    // Remove the session from the database
-    const result = await Session.deleteOne({ sessionId });
+    // Set the session status to inactive
+    const session = await Session.findOneAndUpdate(
+      { sessionId },
+      { status: "inactive", lastAccess: new Date() },
+      { new: true }
+    );
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: 'Session not found' });
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
     }
 
-    res.status(200).json({ message: 'Logout successful' });
+    res.status(200).json({ message: "Logout successful" });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 export const getHR = async (req, res) => {
