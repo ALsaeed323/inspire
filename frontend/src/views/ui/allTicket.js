@@ -26,20 +26,20 @@ const TicketList = () => {
       } else if (user.role === 'hr') {
         console.log('Fetching HR tickets');
         data = await ticketService.getHRTickets();
-        // Filter tickets assigned to the specific HR user or unassigned tickets
+        // Filter tickets for HR users
         data = data.filter(ticket =>
           ticket.user === 'all' || // Assigned to all users
           (ticket.users && ticket.users.includes(user.id)) || // Assigned to specific users
-          !ticket.users // Unassigned tickets
+          (ticket.users.length === 0 && ticket.type === 'HR Support') // Unassigned HR Support tickets
         );
       } else if (user.role === 'administrative') {
         console.log('Fetching administrative tickets');
         data = await ticketService.getAdministrativeTickets();
-        // Filter tickets assigned to the specific administrative user or unassigned tickets
+        // Filter tickets for administrative users
         data = data.filter(ticket =>
           ticket.user === 'all' || // Assigned to all users
           (ticket.users && ticket.users.includes(user.id)) || // Assigned to specific users
-          !ticket.users // Unassigned tickets
+          (ticket.users.length === 0 && ticket.type === 'Administrative Support') // Unassigned Administrative Support tickets
         );
       }
   
@@ -51,6 +51,8 @@ const TicketList = () => {
       setLoading(false);
     }
   };
+  
+  
   
   
   useEffect(() => {
